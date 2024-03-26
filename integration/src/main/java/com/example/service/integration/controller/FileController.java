@@ -35,7 +35,7 @@ public class FileController {
             return ResponseEntity.notFound().build();
         }
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION,"attachment: filename=" + filename);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=" + filename);
         headers.setContentType(MediaType.TEXT_PLAIN);
         return ResponseEntity.ok()
                 .headers(headers)
