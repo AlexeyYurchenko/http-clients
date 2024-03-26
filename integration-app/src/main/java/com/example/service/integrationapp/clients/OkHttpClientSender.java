@@ -1,6 +1,7 @@
 package com.example.service.integrationapp.clients;
 
 import com.example.service.integrationapp.model.EntityModel;
+import com.example.service.integrationapp.model.UpsertEntityRequest;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -34,11 +36,11 @@ public class OkHttpClientSender {
         MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file", file.getName(),
-                        RequestBody.create(MediaType.parse("application/octet-stream"),file.getBytes()));
+                        RequestBody.create(MediaType.parse("application/octet-stream"), file.getBytes()));
 
         Request request = new Request.Builder()
                 .url(baseUrl + "/api/v1/file/upload")
-                .header("Content-Type","multipart/form-data")
+                .header("Content-Type", "multipart/form-data")
                 .post(builder.build())
                 .build();
 
@@ -55,10 +57,10 @@ public class OkHttpClientSender {
     public Resource downLoadFile(String filename) {
         Request request = new Request.Builder()
                 .url(baseUrl + "/api/v1/file/download/" + filename)
-                .header("Accept","application/octet-stream")
+                .header("Accept", "application/octet-stream")
                 .get()
                 .build();
-        try(Response response = httpClient.newCall(request).execute()){
+        try (Response response = httpClient.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 log.error("Error trying to download file");
                 return null;
@@ -74,7 +76,8 @@ public class OkHttpClientSender {
         Request request = new Request.Builder()
                 .url(baseUrl + "/api/v1/entity")
                 .build();
-        return processResponse(request,new TypeReference<>(){});
+        return processResponse(request, new TypeReference<>() {
+        });
     }
 
     public EntityModel getEntityByName(String name) {
@@ -86,43 +89,64 @@ public class OkHttpClientSender {
     }
 
     @SneakyThrows
+    public EntityModel createEntity(UpsertEntityRequest request) {
+        MediaType JSON = MediaType.get("application/json;charset=utf-8");
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        RequestBody body = RequestBody.create(requestBody, JSON);
+
+        Request httpRequest = new Request.Builder()
+                .url(baseUrl + "/api/v1/entity")
+                .post(body)
+                .build();
+        return processResponse(httpRequest, new TypeReference<>() {
+        });
+    }
+
+    @SneakyThrows
+    public EntityModel updateEntity(UUID id, UpsertEntityRequest request) {
+        MediaType JSON = MediaType.get("application/json;charset=utf-8");
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        RequestBody body = RequestBody.create(requestBody, JSON);
+
+        Request httpRequest = new Request.Builder()
+                .url(baseUrl + "/api/v1/entity/" + id)
+                .put(body)
+                .build();
+        return processResponse(httpRequest, new TypeReference<>() {
+        });
+
+    }
+
+    @SneakyThrows
+    public void deleteByEntityID(UUID id) {
+        Request request = new Request.Builder()
+                .url(baseUrl + "/api/v1/entity/" + id)
+                .delete()
+                .build();
+
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new RuntimeException("Unexpected response code: " + response);
+
+            }
+        }
+    }
+
+    @SneakyThrows
     private <T> T processResponse(Request request, TypeReference<T> typeReference) {
         try (Response response = httpClient.newCall(request).execute()) {
-            if(!response.isSuccessful()) {
+            if (!response.isSuccessful()) {
                 throw new RuntimeException("Unexpected response code: " + response);
             }
             ResponseBody responseBody = response.body();
             if (responseBody != null) {
                 String stringBody = responseBody.string();
-                return objectMapper.readValue(stringBody,typeReference);
+                return objectMapper.readValue(stringBody, typeReference);
             } else {
                 throw new RuntimeException("Response body is empty");
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
