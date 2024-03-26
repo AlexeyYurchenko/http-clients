@@ -1,5 +1,7 @@
 package com.example.service.integrationapp.clients;
 
+import com.example.service.integrationapp.model.EntityModel;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -48,6 +51,7 @@ public class OkHttpClientSender {
 
         }
     }
+
     public Resource downLoadFile(String filename) {
         Request request = new Request.Builder()
                 .url(baseUrl + "/api/v1/file/download/" + filename)
@@ -66,4 +70,59 @@ public class OkHttpClientSender {
         }
     }
 
+    public List<EntityModel> getEntityList() {
+        Request request = new Request.Builder()
+                .url(baseUrl + "/api/v1/entity")
+                .build();
+        return processResponse(request,new TypeReference<>(){});
+    }
+
+    public EntityModel getEntityByName(String name) {
+        Request request = new Request.Builder()
+                .url(baseUrl + "/api/v1/entity/" + name)
+                .build();
+        return processResponse(request, new TypeReference<>() {
+        });
+    }
+
+    @SneakyThrows
+    private <T> T processResponse(Request request, TypeReference<T> typeReference) {
+        try (Response response = httpClient.newCall(request).execute()) {
+            if(!response.isSuccessful()) {
+                throw new RuntimeException("Unexpected response code: " + response);
+            }
+            ResponseBody responseBody = response.body();
+            if (responseBody != null) {
+                String stringBody = responseBody.string();
+                return objectMapper.readValue(stringBody,typeReference);
+            } else {
+                throw new RuntimeException("Response body is empty");
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
