@@ -31,7 +31,7 @@ public class FileController {
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
         String filePath = "files/" + filename;
         Resource fileResource = new ClassPathResource(filePath);
-        if (fileResource.exists()) {
+        if (!fileResource.exists()) {
             return ResponseEntity.notFound().build();
         }
         HttpHeaders headers = new HttpHeaders();

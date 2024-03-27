@@ -1,6 +1,7 @@
 package com.example.service.integrationapp.controller;
 
 import com.example.service.integrationapp.clients.OkHttpClientSender;
+import com.example.service.integrationapp.clients.RestTemplateClient;
 import com.example.service.integrationapp.model.EntityModel;
 import com.example.service.integrationapp.model.UpsertEntityRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/client/entity")
 public class EntityClientController {
 
-    private final OkHttpClientSender client;
+    private final RestTemplateClient client;
 
     @GetMapping
     public ResponseEntity<List<EntityModel>> entityList() {
@@ -36,7 +37,7 @@ public class EntityClientController {
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<EntityModel> deleteEntityById(@PathVariable UUID id) {
-        client.deleteByEntityID(id);
+        client.deleteEntityById(id);
         return ResponseEntity.noContent().build();
     }
 }

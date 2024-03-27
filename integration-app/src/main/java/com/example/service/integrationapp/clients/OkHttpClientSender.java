@@ -55,7 +55,7 @@ public class OkHttpClientSender {
         }
     }
 
-    public Resource downLoadFile(String filename) {
+    public Resource downloadFile(String filename) {
         Request request = new Request.Builder()
                 .url(baseUrl + "/api/v1/file/download/" + filename)
                 .header("Accept", "application/octet-stream")
@@ -121,7 +121,7 @@ public class OkHttpClientSender {
     }
 
     @SneakyThrows
-    public void deleteByEntityID(UUID id) {
+    public void deleteByEntityId(UUID id) {
         Request request = new Request.Builder()
                 .url(baseUrl + "/api/v1/entity/" + id)
                 .delete()

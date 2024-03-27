@@ -89,6 +89,15 @@ public class RestTemplateClient {
         );
         return response.getBody();
     }
+    public void deleteEntityById(UUID id) {
+        restTemplate.exchange(
+                baseUrl + "/api/v1/entity/{id}",
+                HttpMethod.DELETE,
+                null,
+                Void.class,
+                id
+        );
+    }
 
 
 }
