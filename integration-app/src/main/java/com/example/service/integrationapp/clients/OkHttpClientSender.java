@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -28,7 +29,7 @@ public class OkHttpClientSender {
 
     private final ObjectMapper objectMapper;
 
-    @Value("{app.integration.base-url}")
+    @Value("${app.integration.base-url}")
     private String baseUrl;
 
     @SneakyThrows

@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/entity")
+@RequestMapping("/api/v1/entity")
 public class EntityController {
 
     @GetMapping

@@ -2,6 +2,7 @@ package com.example.service.integrationapp.controller;
 
 import com.example.service.integrationapp.clients.OkHttpClientSender;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
