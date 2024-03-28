@@ -21,6 +21,7 @@ public class FileClientController {
         client.uploadFile(file);
         return ResponseEntity.ok("File was upload");
     }
+
     @GetMapping("/download/{filename}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
         Resource resource = client.downloadFile(filename);

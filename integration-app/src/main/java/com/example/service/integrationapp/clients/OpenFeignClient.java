@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface OpenFeignClient {
 
     @PostMapping(value = "/api/v1/file/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    String uploadFile(@RequestPart ("file") MultipartFile file);
+    String uploadFile(@RequestPart("file") MultipartFile file);
 
     @GetMapping(value = "/api/v1/file/download/{filename}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     Resource downloadFile(@PathVariable("filename") String filename);
@@ -30,7 +30,7 @@ public interface OpenFeignClient {
     EntityModel createEntity(UpsertEntityRequest request);
 
     @PutMapping(value = "/api/v1/entity/{id}")
-    EntityModel updateEntity(@PathVariable("id") UUID id,UpsertEntityRequest request);
+    EntityModel updateEntity(@PathVariable("id") UUID id, UpsertEntityRequest request);
 
     @DeleteMapping(value = "/api/v1/entity/{id}")
     void deleteEntityById(@PathVariable("id") UUID id);

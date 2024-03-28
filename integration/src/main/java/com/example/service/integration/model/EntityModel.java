@@ -19,6 +19,6 @@ public class EntityModel {
     private Instant date;
 
     public static EntityModel createMocModel(String name) {
-        return new EntityModel(UUID.randomUUID(),name,Instant.now());
+        return new EntityModel(UUID.randomUUID(), name, Instant.now());
     }
 }

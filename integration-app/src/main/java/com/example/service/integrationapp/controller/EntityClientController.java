@@ -22,18 +22,22 @@ public class EntityClientController {
     public ResponseEntity<List<EntityModel>> entityList() {
         return ResponseEntity.ok(client.getEntityList());
     }
+
     @GetMapping("/{name}")
     public ResponseEntity<EntityModel> entityByName(@PathVariable String name) {
         return ResponseEntity.ok(client.getEntityByName(name));
     }
+
     @PostMapping
     public ResponseEntity<EntityModel> createEntity(@RequestBody UpsertEntityRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(client.createEntity(request));
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel> updateEntity(@PathVariable UUID id, @RequestBody UpsertEntityRequest request) {
-        return ResponseEntity.ok(client.updateEntity(id,request));
+        return ResponseEntity.ok(client.updateEntity(id, request));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<EntityModel> deleteEntityById(@PathVariable UUID id) {
         client.deleteEntityById(id);

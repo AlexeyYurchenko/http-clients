@@ -38,7 +38,7 @@ public class WebClientSender {
 
     public Resource downloadFile(String filename) {
         return webClient.get()
-                .uri("/api/v1/file/download/{filename}",filename)
+                .uri("/api/v1/file/download/{filename}", filename)
                 .accept(MediaType.APPLICATION_OCTET_STREAM)
                 .retrieve()
                 .bodyToMono(Resource.class)
@@ -56,7 +56,7 @@ public class WebClientSender {
 
     public EntityModel getEntityByName(String name) {
         return webClient.get()
-                .uri("/api/v1/entity/{name}",name)
+                .uri("/api/v1/entity/{name}", name)
                 .retrieve()
                 .bodyToMono(EntityModel.class)
                 .block();
@@ -73,16 +73,16 @@ public class WebClientSender {
 
     public EntityModel updateEntity(UUID id, UpsertEntityRequest request) {
         return webClient.put()
-                .uri("/api/v1/entity/{id}",id)
+                .uri("/api/v1/entity/{id}", id)
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(EntityModel.class)
                 .block();
     }
 
-    public void deleteEntityById (UUID id) {
+    public void deleteEntityById(UUID id) {
         webClient.delete()
-                .uri("/api/v1/entity/{id}",id)
+                .uri("/api/v1/entity/{id}", id)
                 .retrieve()
                 .bodyToMono(Void.class)
                 .block();

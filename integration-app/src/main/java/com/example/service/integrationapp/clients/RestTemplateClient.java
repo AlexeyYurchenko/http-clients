@@ -27,16 +27,16 @@ public class RestTemplateClient {
     @Value("${app.integration.base-url}")
     private String baseUrl;
 
-    public void uploadFile (MultipartFile file) {
+    public void uploadFile(MultipartFile file) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        MultiValueMap<String,Object> body = new LinkedMultiValueMap<>();
-        body.add("file",file.getResource());
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("file", file.getResource());
 
-        HttpEntity<MultiValueMap<String,Object>> requestEntity = new HttpEntity<>(body,headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
-        restTemplate.postForObject(baseUrl + "/api/v1/file/upload",requestEntity, String.class);
+        restTemplate.postForObject(baseUrl + "/api/v1/file/upload", requestEntity, String.class);
     }
 
     public Resource downloadFile(String filename) {
@@ -44,7 +44,7 @@ public class RestTemplateClient {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
 
         ResponseEntity<Resource> response = restTemplate
-                .exchange(baseUrl + "/api/v1/file/download/{filename}", HttpMethod.GET,new HttpEntity<>(headers),Resource.class,filename);
+                .exchange(baseUrl + "/api/v1/file/download/{filename}", HttpMethod.GET, new HttpEntity<>(headers), Resource.class, filename);
 
         return response.getBody();
     }
@@ -54,13 +54,15 @@ public class RestTemplateClient {
                 baseUrl + "/api/v1/entity"
                 , HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<>() {}
+                new ParameterizedTypeReference<>() {
+                }
         );
         return response.getBody();
     }
+
     public EntityModel getEntityByName(String name) {
         ResponseEntity<EntityModel> response = restTemplate.exchange(
-           baseUrl + "/api/v1/entity/{name}",
+                baseUrl + "/api/v1/entity/{name}",
                 HttpMethod.GET,
                 null,
                 EntityModel.class,
@@ -68,6 +70,7 @@ public class RestTemplateClient {
         );
         return response.getBody();
     }
+
     public EntityModel createEntity(UpsertEntityRequest request) {
         HttpEntity<UpsertEntityRequest> requestEntity = new HttpEntity<>(request);
         ResponseEntity<EntityModel> response = restTemplate.exchange(
@@ -78,6 +81,7 @@ public class RestTemplateClient {
         );
         return response.getBody();
     }
+
     public EntityModel updateEntity(UUID id, UpsertEntityRequest request) {
         HttpEntity<UpsertEntityRequest> requestEntity = new HttpEntity<>(request);
         ResponseEntity<EntityModel> response = restTemplate.exchange(
@@ -89,6 +93,7 @@ public class RestTemplateClient {
         );
         return response.getBody();
     }
+
     public void deleteEntityById(UUID id) {
         restTemplate.exchange(
                 baseUrl + "/api/v1/entity/{id}",

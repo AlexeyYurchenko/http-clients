@@ -20,7 +20,7 @@ public class EntityController {
     @GetMapping
     public ResponseEntity<List<EntityModel>> entityList() {
         List<EntityModel> entityModels = new ArrayList<>();
-        for (int  i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             entityModels.add(EntityModel.createMocModel("Model: " + (i + 1)));
         }
         return ResponseEntity.ok(entityModels);
@@ -37,12 +37,13 @@ public class EntityController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel> updateEntity(@PathVariable UUID id,@RequestBody UpsertEntityRequest request) {
+    public ResponseEntity<EntityModel> updateEntity(@PathVariable UUID id, @RequestBody UpsertEntityRequest request) {
         return ResponseEntity.ok(new EntityModel(id, request.getName(), Instant.now()));
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<EntityModel> deleteEntityById(@PathVariable UUID id) {
-        log.info("Delete entity by ID: {}",id);
+        log.info("Delete entity by ID: {}", id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -14,12 +14,14 @@ public class ClientConfiguration {
     public OkHttpClient okHttpClient() {
         return new OkHttpClient();
     }
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
     @Bean
-    public WebClient webClient(@Value("${app.integration.base-url}")String baseUrl) {
+    public WebClient webClient(@Value("${app.integration.base-url}") String baseUrl) {
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .build();

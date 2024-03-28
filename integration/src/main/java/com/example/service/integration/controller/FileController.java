@@ -20,13 +20,14 @@ public class FileController {
     @SneakyThrows
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestPart MultipartFile file) {
-        if(file.isEmpty()) {
+        if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("File is empty");
         }
         String content = new String(file.getBytes(), StandardCharsets.UTF_8);
         log.info("File content {}", content);
         return ResponseEntity.ok("File upload successfully");
     }
+
     @GetMapping("/download/{filename}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
         String filePath = "files/" + filename;
@@ -35,7 +36,7 @@ public class FileController {
             return ResponseEntity.notFound().build();
         }
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=" + filename);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
         headers.setContentType(MediaType.TEXT_PLAIN);
         return ResponseEntity.ok()
                 .headers(headers)
