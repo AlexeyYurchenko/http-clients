@@ -27,6 +27,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-data-cache")
+	implementation("com.google.guava:guava:32.1.1-jre")
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
