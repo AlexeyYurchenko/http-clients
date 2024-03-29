@@ -28,7 +28,7 @@ public class DataBaseEntityService {
         return repository.findById(id).orElseThrow();
     }
 
-    @Cacheable("databaseByName")
+    @Cacheable("databaseEntityByName")
     public DataBaseEntity findByName(String name) {
         DataBaseEntity probe = new DataBaseEntity();
         probe.setName(name);
@@ -50,7 +50,7 @@ public class DataBaseEntityService {
 
     @Caching(evict = {
             @CacheEvict(value = "databaseEntities", allEntries = true),
-            @CacheEvict(value = "databaseByName", allEntries = true)
+            @CacheEvict(value = "databaseEntityByName", allEntries = true)
     })
     public DataBaseEntity update(UUID id, DataBaseEntity entity) {
         DataBaseEntity entityForUpdate = findById(id);
@@ -62,7 +62,7 @@ public class DataBaseEntityService {
 
     @Caching(evict = {
             @CacheEvict(value = "databaseEntities", allEntries = true),
-            @CacheEvict(value = "databaseByName", allEntries = true)
+            @CacheEvict(value = "databaseEntityByName", allEntries = true)
     })
     public void deleteById(UUID id) {
         repository.deleteById(id);
