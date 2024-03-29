@@ -29,8 +29,8 @@ public class DataBaseEntityService {
         probe.setName(name);
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnoreNullValues()
-                .withIgnorePaths("id","date");
-        Example<DataBaseEntity> example = Example.of(probe,matcher);
+                .withIgnorePaths("id", "date");
+        Example<DataBaseEntity> example = Example.of(probe, matcher);
         return repository.findOne(example).orElseThrow();
     }
 
@@ -42,7 +42,7 @@ public class DataBaseEntityService {
         return repository.save(forSave);
     }
 
-    public DataBaseEntity update(UUID id,DataBaseEntity entity) {
+    public DataBaseEntity update(UUID id, DataBaseEntity entity) {
         DataBaseEntity entityForUpdate = findById(id);
         entityForUpdate.setName(entity.getName());
         entityForUpdate.setDate(entity.getDate());
