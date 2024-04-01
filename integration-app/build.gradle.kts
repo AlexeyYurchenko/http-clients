@@ -27,12 +27,14 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-data-cache")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("io.lettuce:lettuce-core")
+	implementation("org.springframework.boot:spring-boot-starter-cache:3.2.4")
 	implementation("com.google.guava:guava:32.1.1-jre")
 	runtimeOnly("org.postgresql:postgresql")
 	implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
 
-	implementation("com.squareup.okhttp3:okhttp:4.11.0")
+	implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")

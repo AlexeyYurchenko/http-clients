@@ -30,6 +30,6 @@ public class AppCacheProperties {
         String DATABASE_ENTITY_BY_NAME = "databaseEntityByName";
     }
     public enum CacheType {
-        IN_MEMORY
+        IN_MEMORY, REDIS
     }
 }
