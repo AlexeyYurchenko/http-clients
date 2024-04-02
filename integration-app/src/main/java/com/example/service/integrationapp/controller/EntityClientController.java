@@ -28,6 +28,11 @@ public class EntityClientController {
         );
     }
 
+    @GetMapping("/by-id/{id}")
+    public ResponseEntity<EntityModel> findById(@PathVariable UUID id) {
+        return ResponseEntity.ok(EntityModel.from(service.findById(id)));
+    }
+
     @GetMapping("/{name}")
     public ResponseEntity<EntityModel> entityByName(@PathVariable String name) {
         return ResponseEntity.ok(EntityModel.from(service.findByName(name)));

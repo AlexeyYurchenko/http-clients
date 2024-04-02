@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class DataBaseEntity {
+public class DataBaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
