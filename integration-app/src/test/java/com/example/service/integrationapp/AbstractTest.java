@@ -50,7 +50,7 @@ public class AbstractTest {
     protected MockMvc mockMvc;
 
     @Autowired
-    protected RedisTemplate<String,Object> redisTemplate;
+    protected RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     protected ObjectMapper objectMapper;
@@ -84,14 +84,14 @@ public class AbstractTest {
     @DynamicPropertySource
     public static void registerProperties(DynamicPropertyRegistry registry) {
         String jdbcUrl = postgreSQLContainer.getJdbcUrl();
-        registry.add("spring.datasource.username", postgreSQLContainer :: getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer :: getPassword);
+        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
         registry.add("spring.datasource.username", () -> jdbcUrl);
 
-        registry.add("spring.data.redis.host", REDIS_CONTAINER :: getHost);
+        registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
         registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379).toString());
 
-        registry.add("app.integration.base-url",wireMockServer::baseUrl);
+        registry.add("app.integration.base-url", wireMockServer::baseUrl);
 
     }
 
@@ -110,8 +110,8 @@ public class AbstractTest {
 
         List<EntityModel> findAllResponseBody = new ArrayList<>();
 
-        findAllResponseBody.add(new EntityModel(UUID.randomUUID(), "Entity_1",Instant.now()));
-        findAllResponseBody.add(new EntityModel(UUID.randomUUID(), "Entity_2",Instant.now()));
+        findAllResponseBody.add(new EntityModel(UUID.randomUUID(), "Entity_1", Instant.now()));
+        findAllResponseBody.add(new EntityModel(UUID.randomUUID(), "Entity_2", Instant.now()));
 
         wireMockServer.stubFor(WireMock.get("/api/v1/entity")
                 .willReturn(aResponse()
@@ -119,7 +119,7 @@ public class AbstractTest {
                         .withBody(objectMapper.writeValueAsString(findAllResponseBody))
                         .withStatus(200)));
 
-        EntityModel findByNameResponseBody = new EntityModel(UUID.randomUUID(),"someEntity",ENTITY_DATE);
+        EntityModel findByNameResponseBody = new EntityModel(UUID.randomUUID(), "someEntity", ENTITY_DATE);
         wireMockServer.stubFor(WireMock.get("/api/v1/entity/" + findByNameResponseBody.getName())
                 .willReturn(aResponse()
                         .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
@@ -128,24 +128,26 @@ public class AbstractTest {
 
         UpsertEntityRequest createRequest = new UpsertEntityRequest();
         createRequest.setName("newEntity");
-        EntityModel createResponseBody = new EntityModel(UUID.randomUUID(),"newEntity",ENTITY_DATE);
+        EntityModel createResponseBody = new EntityModel(UUID.randomUUID(), "newEntity", ENTITY_DATE);
 
         wireMockServer.stubFor(WireMock.post("/api/v1/entity")
                 .withRequestBody(equalToJson(objectMapper.writeValueAsString(createRequest)))
                 .willReturn(aResponse()
-                        .withHeader("Content-type",MediaType.APPLICATION_JSON_VALUE)
+                        .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
                         .withBody(objectMapper.writeValueAsString(createResponseBody))
                         .withStatus(201)));
 
         UpsertEntityRequest updateRequest = new UpsertEntityRequest();
         updateRequest.setName("updateName");
-        EntityModel updateResponseBody = new EntityModel(UPDATE_ID,"updateName",ENTITY_DATE);
+        EntityModel updateResponseBody = new EntityModel(UPDATE_ID, "updateName", ENTITY_DATE);
+
+        wireMockServer.stubFor(WireMock.put("/api/v1/entity/" + UPDATE_ID)
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(updateRequest)))
+                .willReturn(aResponse()
+                        .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(updateResponseBody))
+                        .withStatus(200)));
     }
-
-
-
-
-
 
 
 }
