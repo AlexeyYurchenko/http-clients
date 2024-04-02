@@ -1,15 +1,21 @@
 package com.example.service.integrationapp;
 
+import com.example.service.integrationapp.model.EntityModel;
+import com.example.service.integrationapp.model.UpsertEntityRequest;
 import com.example.service.integrationapp.repository.DataBaseEntityRepository;
 import com.example.service.integrationapp.service.DataBaseEntityService;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.redis.testcontainers.RedisContainer;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -21,8 +27,12 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
 @SpringBootTest
@@ -70,6 +80,7 @@ public class AbstractTest {
 
         postgreSQLContainer.start();
     }
+
     @DynamicPropertySource
     public static void registerProperties(DynamicPropertyRegistry registry) {
         String jdbcUrl = postgreSQLContainer.getJdbcUrl();
@@ -83,6 +94,56 @@ public class AbstractTest {
         registry.add("app.integration.base-url",wireMockServer::baseUrl);
 
     }
+
+    @BeforeEach
+    public void before() throws Exception {
+        redisTemplate.getConnectionFactory().getConnection().serverCommands().flushAll();
+        stubClient();
+    }
+
+    @AfterEach
+    public void afterEach() {
+        wireMockServer.resetAll();
+    }
+
+    private void stubClient() throws Exception {
+
+        List<EntityModel> findAllResponseBody = new ArrayList<>();
+
+        findAllResponseBody.add(new EntityModel(UUID.randomUUID(), "Entity_1",Instant.now()));
+        findAllResponseBody.add(new EntityModel(UUID.randomUUID(), "Entity_2",Instant.now()));
+
+        wireMockServer.stubFor(WireMock.get("/api/v1/entity")
+                .willReturn(aResponse()
+                        .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(findAllResponseBody))
+                        .withStatus(200)));
+
+        EntityModel findByNameResponseBody = new EntityModel(UUID.randomUUID(),"someEntity",ENTITY_DATE);
+        wireMockServer.stubFor(WireMock.get("/api/v1/entity/" + findByNameResponseBody.getName())
+                .willReturn(aResponse()
+                        .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(findByNameResponseBody))
+                        .withStatus(200)));
+
+        UpsertEntityRequest createRequest = new UpsertEntityRequest();
+        createRequest.setName("newEntity");
+        EntityModel createResponseBody = new EntityModel(UUID.randomUUID(),"newEntity",ENTITY_DATE);
+
+        wireMockServer.stubFor(WireMock.post("/api/v1/entity")
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(createRequest)))
+                .willReturn(aResponse()
+                        .withHeader("Content-type",MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(objectMapper.writeValueAsString(createResponseBody))
+                        .withStatus(201)));
+
+        UpsertEntityRequest updateRequest = new UpsertEntityRequest();
+        updateRequest.setName("updateName");
+        EntityModel updateResponseBody = new EntityModel(UPDATE_ID,"updateName",ENTITY_DATE);
+    }
+
+
+
 
 
 
