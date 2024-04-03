@@ -147,9 +147,10 @@ public class AbstractTest {
                         .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
                         .withBody(objectMapper.writeValueAsString(updateResponseBody))
                         .withStatus(200)));
+
+        wireMockServer.stubFor(WireMock.delete("/api/v1/entity/" + UPDATE_ID)
+                .willReturn(aResponse().withStatus(204)));
     }
-
-
 }
 
 
