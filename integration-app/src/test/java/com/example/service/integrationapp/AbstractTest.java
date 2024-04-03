@@ -4,6 +4,7 @@ import com.example.service.integrationapp.model.EntityModel;
 import com.example.service.integrationapp.model.UpsertEntityRequest;
 import com.example.service.integrationapp.repository.DataBaseEntityRepository;
 import com.example.service.integrationapp.service.DataBaseEntityService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.redis.testcontainers.RedisContainer;
@@ -22,8 +23,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.utility.DockerImageName;
 
 import java.time.Instant;
@@ -44,7 +45,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 public class AbstractTest {
 
     public static UUID UPDATE_ID = UUID.fromString("00e8cba9-05c2-4cd8-b08a-666a3a3cae00");
-    public static Instant ENTITY_DATE = Instant.parse("testName_3', '2100-01-01 00:00:00.782169 +00:00");
+    public static Instant ENTITY_DATE = Instant.parse("2100-01-01T00:00:00Z");
 
     @Autowired
     protected MockMvc mockMvc;
@@ -67,7 +68,7 @@ public class AbstractTest {
             .build();
 
     protected static PostgreSQLContainer postgreSQLContainer;
-
+    @Container
     protected static final RedisContainer REDIS_CONTAINER = new RedisContainer(DockerImageName.parse("redis:7.0.12"))
             .withExposedPorts(6379)
             .withReuse(true);
@@ -86,7 +87,7 @@ public class AbstractTest {
         String jdbcUrl = postgreSQLContainer.getJdbcUrl();
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-        registry.add("spring.datasource.username", () -> jdbcUrl);
+        registry.add("spring.datasource.url", () -> jdbcUrl);
 
         registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
         registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(6379).toString());
@@ -152,26 +153,3 @@ public class AbstractTest {
                 .willReturn(aResponse().withStatus(204)));
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

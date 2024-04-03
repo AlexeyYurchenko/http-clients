@@ -15,8 +15,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "entities")
+@Entity(name = "entities")
+//@Table(name = "entities")
 public class DataBaseEntity implements Serializable {
 
     @Id
